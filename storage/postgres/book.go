@@ -46,7 +46,7 @@ func (h bookRepoImpl) GetAllSearchBooks(offset string, limit string, search stri
 	)
 
 	if search != "" {
-		filter += " AND name ILIKE '%' || :search || '%' OR owner ILIKE '%' || :search "
+		filter += " AND name ILIKE '%' || :search || '%' OR owner ILIKE '%' || :search || '%' "
 		params["search"] = search
 	}
 	countQuery := `SELECT count(1) FROM books WHERE true ` + filter
