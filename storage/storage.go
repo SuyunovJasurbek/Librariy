@@ -13,7 +13,7 @@ type BookRepoI interface{
 	 CreateBook(entity model.Books, id string)error
 	 GetBookName(id string) (string , error) 
 	 GetAllSearchBooks(offset, limit, search string) (*model.GetAllBook, error)
-	 UpdateBook(entity model.UbdateBookRequest, id string) (string, error) 
+	 UpdateBook(entity model.UbdateBookRequest, id string) (*model.Books, error) 
 	 DeleteBook(id string) error
 }
 

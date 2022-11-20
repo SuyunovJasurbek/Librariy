@@ -3,6 +3,7 @@ package postgres
 import (
 	"fmt"
 	"library/model"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -11,8 +12,6 @@ import (
 type bookRepoImpl struct {
 	db *sqlx.DB
 }
-
-
 
 var (
 	booksTable = "books"
@@ -36,29 +35,29 @@ func (h bookRepoImpl) GetAllBooks() ([]model.Books, error) {
 	}
 	return books, nil
 }
+
 // GetAllSearchBooks implements storage.BookRepoI
 func (h bookRepoImpl) GetAllSearchBooks(offset string, limit string, search string) (*model.GetAllBook, error) {
 	var (
-		resp  model.GetAllBook
-		err error
+		resp   model.GetAllBook
+		err    error
 		filter string
-		params= make(map[string]interface{})
+		params = make(map[string]interface{})
 	)
 
-	if search!= ""{
-		filter += " AND name ILIKE '%' || :search || '%' OR owner ILIKE '%' || :search || '%'  OR cost ILIKE '%' || :search || '%'"
-		params["search"]=search
+	if search != "" {
+		filter += " AND name ILIKE '%' || :search || '%' OR owner ILIKE '%' || :search "
+		params["search"] = search
 	}
 	countQuery := `SELECT count(1) FROM books WHERE true ` + filter
 
-	q, err:=h.db.NamedQuery(countQuery,params)
-	if err!=nil{
+	q, err := h.db.NamedQuery(countQuery, params)
+	if err != nil {
 		return nil, err
 	}
 	if q.Rows.Next() {
 		q.Rows.Scan(&resp.Count)
 	}
-
 
 	query := `SELECT
 				name,
@@ -92,7 +91,7 @@ func (h bookRepoImpl) GetAllSearchBooks(offset string, limit string, search stri
 		)
 
 		if err != nil {
-			return  nil, err
+			return nil, err
 		}
 
 		resp.Book = append(resp.Book, book)
@@ -130,8 +129,71 @@ func (h bookRepoImpl) GetBookName(id string) (string, error) {
 	return book.Name, nil
 }
 
-func (h bookRepoImpl) UpdateBook(entity model.UbdateBookRequest, id string) (string, error) {
-	return "", nil
+func (h bookRepoImpl) UpdateBook(entity model.UbdateBookRequest, id string) (*model.Books, error) {
+
+	var (
+		params       map[string]interface{}
+		updated_book model.Books
+	)
+	params = map[string]interface{}{}
+	//  fmt.Println("HEllo from repo")
+	query := "UPDATE books  SET "
+
+	if len(entity.Name) > 0 {
+		params["name"] = entity.Name
+		//query += "firstname = :firstname, "
+	}
+
+	if len(entity.Owner) > 0 {
+		params["owner"] = entity.Owner
+		//query += "lastname = :lastname, "
+	}
+
+	if len(entity.Cost) > 0 {
+		params["cost"] = entity.Cost
+		//query += "username = :username, "
+	}
+	params["id"] = id
+	params["updatedat"] = time.Now()
+	k := len(params)
+	for i := range params {
+		//  fmt.Printf(" %s = :%s ", i, i)
+		query += fmt.Sprintf(" %s = :%s ", i, i)
+		k--
+		if k != 0 {
+			query += ","
+		}
+	}
+	params["id"] = id
+	params["updatedat"] = time.Now()
+	//s := "UPDATE author SET firstname=:firstname, lastname=:lastname"
+	// query += " WHERE id = :id RETURNING name, owner, cost,updatedat ;" // ubdet qilganimizdan sung , uni biror nimasini qaytarmoqchi bulsak, shundan foydalanish kerak
+	query += " WHERE id = :id RETURNING * ;" // xamma update bulgan datani qayatrishda ishlatishimiz mumkin
+	fmt.Println(query)
+	rows, err := h.db.NamedQuery(query, params)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	// fmt.Println("res suc")
+	for rows.Next() {
+		err := rows.Scan(
+			&updated_book.Name,
+			&updated_book.Owner,
+			&updated_book.Cost,
+			&updated_book.ID,
+			&updated_book.CreatedAt,
+			&updated_book.UpdatedAt,
+		)
+		if err != nil {
+			//    fmt.Println("scan err")
+			return nil, err
+		}
+	}
+	//  fmt.Println("scan suc")
+	return &updated_book, nil
+
 }
 
 func (h bookRepoImpl) DeleteBook(id string) error {
