@@ -9,7 +9,6 @@ type StorageI interface{
 }
 
 type BookRepoI interface{
-	 GetAllBooks() ([]model.Books, error) 
 	 CreateBook(entity model.Books, id string)error
 	 GetBookName(id string) (string , error) 
 	 GetAllSearchBooks(offset, limit, search string) (*model.GetAllBook, error)
@@ -18,9 +17,9 @@ type BookRepoI interface{
 }
 
 type UserRepoI interface{
-	GetAllUsers() ([]model.Users, error) 
-	CreateUser(entity model.CreateUserRequest, id string)error
+	GetAllSearchUser(offset, limit, search string) (*model.GetAllUser, error)
+	CreateUser(entity model.Users, id string)error
 	GetUserName(id string) (string , error) 
-	UpdateUser(entity model.UbdateUserRequest, id string) (string, error) 
+	UpdateUser(entity model.UbdateUserRequest, id string) (*model.Users, error) 
 	DeleteUser(id string) error
 }

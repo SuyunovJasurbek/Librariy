@@ -16,7 +16,7 @@ func main() {
 	{
 		r:= api_user.Group("/user")
 		{
-			//Get all Users 
+			
 			r.GET("/",h.GetAll_user)
 			//Get id
 			r.GET("/:id",h.GetName_user)
@@ -33,12 +33,10 @@ func main() {
 	{
 		r:= api_book.Group("/book")
 		{
-			//Get all Users 
-			r.GET("/",h.GetAll_book)
 			//Get id
 			r.GET("/:id",h.GetName_book)
 			//Search books
-			r.GET("/b",h.GetAllSearch_books)
+			r.GET("/",h.GetAllSearch_books)
 			 //Criate
 			r.POST("/",h.Create_book)
 			//Ubdate
