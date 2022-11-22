@@ -17,25 +17,6 @@ var (
 	booksTable = "books"
 )
 
-func (h bookRepoImpl) GetAllBooks() ([]model.Books, error) {
-
-	query := `SELECT *  FROM books;`
-	var books = []model.Books{}
-	rows, err := h.db.Queryx(query)
-	if err != nil {
-		return nil, err
-	}
-	for rows.Next() {
-		var book model.Books
-		err = rows.StructScan(&book)
-		if err != nil {
-			return nil, err
-		}
-		books = append(books, book)
-	}
-	return books, nil
-}
-
 // GetAllSearchBooks implements storage.BookRepoI
 func (h bookRepoImpl) GetAllSearchBooks(offset string, limit string, search string) (*model.GetAllBook, error) {
 	var (
@@ -46,12 +27,13 @@ func (h bookRepoImpl) GetAllSearchBooks(offset string, limit string, search stri
 	)
 
 	if search != "" {
-		filter += " AND name ILIKE '%' || :search || '%' OR owner ILIKE '%' || :search "
+		filter += " AND name ILIKE '%' || :search || '%' OR owner ILIKE '%' || :search || '%' "
 		params["search"] = search
 	}
 	countQuery := `SELECT count(1) FROM books WHERE true ` + filter
 
 	q, err := h.db.NamedQuery(countQuery, params)
+	
 	if err != nil {
 		return nil, err
 	}

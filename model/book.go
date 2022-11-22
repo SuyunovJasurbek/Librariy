@@ -16,10 +16,10 @@ type GetAllBook struct{
 type CreateBookRequest struct {
 	Name string `json:"name" db:"name"`
 	Owner string `json:"owner" db:"owner"`
-	Cost string `json:"cost" db:"id"`
+	Cost string `json:"cost" db:"cost"`
 }
 type UbdateBookRequest struct {
 	Name string `json:"name" db:"name"`
 	Owner string `json:"owner" db:"owner"`
-	Cost string `json:"cost" db:"id"`
+	Cost string `json:"cost" db:"cost"`
 }

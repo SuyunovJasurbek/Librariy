@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"library/model"
 	"net/http"
 	"time"
@@ -10,25 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *HandlerImpl) GetAll_book(ctx *gin.Context) {
-	all, err := h.strg.Book().GetAllBooks()
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{
-			"message": model.Response{
-				Data:    nil,
-				Message: err.Error(),
-			},
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": model.Response{
-			Data:    all,
-			Message: "succses",
-		},
-	})
 
-}
 func (h *HandlerImpl) GetName_book(ctx *gin.Context) {
 	get_id := ctx.Param("id")
 	get_data, err := h.strg.Book().GetBookName(get_id)
@@ -69,7 +50,7 @@ func (h *HandlerImpl) GetAllSearch_books(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": model.Response{
 				Data:    err.Error(),
-				Message: "invalid request",
+				Message: " ",
 			},
 		})
 		return
@@ -145,7 +126,7 @@ func (h *HandlerImpl) Update_book(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusBadRequest, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"message": model.Response{
 			Data:    update_name,
 			Message: "update data",
@@ -157,7 +138,7 @@ func (h *HandlerImpl) Delete_book(ctx *gin.Context) {
 	delete_id := ctx.Param("id")
 	err := h.strg.Book().DeleteBook(delete_id)
 	if err != nil {
-		fmt.Println(" handler  : ", delete_id)
+	//	fmt.Println(" handler  : ", delete_id)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": model.Response{
 				Data:    err.Error(),
