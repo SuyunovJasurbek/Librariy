@@ -14,8 +14,8 @@ type postgresImpl struct {
 	bookRepo *bookRepoImpl
 }
 
-func NewPostgres() storage.StorageI {
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=library password=postgres sslmode=disable")
+func NewPostgres(pgConnStr string) storage.StorageI {
+	db, err := sqlx.Connect("postgres", pgConnStr)
 
 	if err != nil {
 		fmt.Print(" xatolik shotta ")

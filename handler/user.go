@@ -121,7 +121,7 @@ func (h *HandlerImpl) Update_user(ctx *gin.Context) {
 		return
 	}
 
-
+	
 	upd_data, err := h.strg.User().UpdateUser(upd_user, upd_id)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
