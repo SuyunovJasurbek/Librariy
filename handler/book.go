@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 )
 
-
 func (h *HandlerImpl) GetName_book(ctx *gin.Context) {
 	get_id := ctx.Param("id")
 	get_data, err := h.strg.Book().GetBookName(get_id)
@@ -31,6 +30,7 @@ func (h *HandlerImpl) GetName_book(ctx *gin.Context) {
 	})
 
 }
+
 
 func (h *HandlerImpl) GetAllSearch_books(ctx *gin.Context) {
 	offset, offset_exists := ctx.GetQuery("offset")

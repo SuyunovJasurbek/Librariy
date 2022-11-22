@@ -10,3 +10,4 @@ func NewHandler(s storage.StorageI ) HandlerImpl{
 		strg: s,
 	}
 }
+
